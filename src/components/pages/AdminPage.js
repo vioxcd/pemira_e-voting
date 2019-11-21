@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
+import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { login, tambahKandidat } from '../../store/actions/adminActions'
+import { firestoreConnect } from 'react-redux-firebase'
+import { loginAdmin, tambahKandidat } from '../../store/actions/adminActions'
 
 class AdminPage extends Component {
   state = {
@@ -22,7 +24,7 @@ class AdminPage extends Component {
     e.preventDefault()
 
     const { username, password } = this.state
-    this.props.login({ username, password })
+    this.props.loginAdmin({ username, password })
   }
 
   handleTambahKandidat = e => {
@@ -33,6 +35,7 @@ class AdminPage extends Component {
   }
 
   render() {
+    const { kandidat } = this.props
     return (
       <>
         <section>
@@ -80,16 +83,39 @@ class AdminPage extends Component {
             </div>
           </form>
         </section>
+        <section>
+          {kandidat &&
+            kandidat.map(info => (
+              <div key={info.no}>
+                <h4>{info.no}</h4>
+                <p>
+                  {info.calon_1.nama}, {info.calon_1.nim}
+                </p>
+                <p>
+                  {info.calon_2.nama}, {info.calon_2.nim}
+                </p>
+              </div>
+            ))}
+        </section>
       </>
     )
   }
 }
 
+const mapStateToProps = state => {
+  return {
+    kandidat: state.firestore.ordered.kandidat,
+  }
+}
+
 const mapDispatchToProps = dispatch => {
   return {
-    login: credentials => dispatch(login(credentials)),
+    loginAdmin: credentials => dispatch(loginAdmin(credentials)),
     tambahKandidat: kandidat => dispatch(tambahKandidat(kandidat)),
   }
 }
 
-export default connect(null, mapDispatchToProps)(AdminPage)
+export default compose(
+  connect(mapStateToProps, mapDispatchToProps),
+  firestoreConnect([{ collection: 'kandidat' }])
+)(AdminPage)

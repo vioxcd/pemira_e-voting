@@ -1,10 +1,27 @@
-export const login = credentials => {
+export const loginAdmin = credentials => {
   return (dispatch, getState, { getFirebase, getFirestore }) => {
     // Make async calls to database
-    dispatch({
-      type: 'LOGIN',
-      credentials,
-    })
+    const firestore = getFirestore()
+    firestore
+      .get({
+        collection: 'admin',
+        where: [
+          ['username', '==', 'admin'],
+          ['password', '==', 'admin'],
+        ],
+      })
+      .then(() => {
+        dispatch({
+          type: 'ADMIN_LOGIN_SUCCESSFUL',
+          credentials,
+        })
+      })
+      .catch(err => {
+        dispatch({
+          type: 'ADMIN_LOGIN_FAILED',
+          err,
+        })
+      })
   }
 }
 
