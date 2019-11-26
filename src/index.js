@@ -1,12 +1,13 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import './index.css'
+import Checkout from './components/checkout-step-examples/Checkout'
 import App from './App'
 import * as serviceWorker from './serviceWorker'
 import { createStore, applyMiddleware, compose } from 'redux'
 import { Provider } from 'react-redux'
 import thunk from 'redux-thunk'
-import { ReactReduxFirebaseProvider, getFirebase } from 'react-redux-firebase'
+import { ReactReduxFirebaseProvider, useFirebase } from 'react-redux-firebase'
 import {
   createFirestoreInstance,
   reduxFirestore,
@@ -23,7 +24,7 @@ firebase.initializeApp(firebaseConfig)
 const store = createStore(
   rootReducer,
   compose(
-    applyMiddleware(thunk.withExtraArgument({ getFirebase, getFirestore })),
+    applyMiddleware(thunk.withExtraArgument({ useFirebase, getFirestore })),
     reduxFirestore(firebase)
   )
 )
@@ -47,6 +48,7 @@ ReactDOM.render(
       <App />
     </ReactReduxFirebaseProvider>
   </Provider>,
+  // <Checkout />,
   document.getElementById('root')
 )
 

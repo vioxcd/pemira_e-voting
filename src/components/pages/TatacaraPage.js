@@ -1,74 +1,102 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import { compose } from 'redux'
-import { firestoreConnect } from 'react-redux-firebase'
-import { scanKTM } from '../../store/actions/publicActions'
+import React from 'react'
+// import { connect } from 'react-redux'
+// import { compose } from 'redux'
+// import { firestoreConnect } from 'react-redux-firebase'
+// import { scanKTM } from '../../store/actions/publicActions'
+import Button from '@material-ui/core/Button'
+import CssBaseline from '@material-ui/core/CssBaseline'
+import Typography from '@material-ui/core/Typography'
+import { makeStyles } from '@material-ui/core/styles'
+import Container from '@material-ui/core/Container'
+import Box from '@material-ui/core/Box'
+import { Link } from 'react-router-dom'
 
-class TatacaraPage extends Component {
-  state = {
-    nama: '',
-    nim: '',
-  }
+const useStyles = makeStyles(theme => ({
+  paper: {
+    marginTop: theme.spacing(8),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+}))
 
-  handleChange = e => {
-    this.setState({
-      [e.target.id]: e.target.value,
-    })
-  }
+function TatacaraPage() {
+  const classes = useStyles()
+  const state = [
+    '1. Mahasiswa aktif UIN Syarif Hidayatullah Jakarta',
+    '2. Memiliki Kartu Tanda Mahasiswa (KTM)',
+    '3. etc etc etc',
+  ]
+  // state = {
+  //   nama: '',
+  //   nim: '',
+  // }
 
-  handleSubmit = e => {
-    e.preventDefault()
+  // handleChange = e => {
+  //   this.setState({
+  //     [e.target.id]: e.target.value,
+  //   })
+  // }
 
-    this.props.scanKTM(this.state)
-  }
+  // handleSubmit = e => {
+  //   e.preventDefault()
 
-  render() {
-    const { tatacara } = this.props
-    return (
-      <>
-        <section>
-          <h1>Tatacara</h1>
-          {tatacara &&
-            tatacara.map(baris => (
-              <p key={baris.id}>
-                {baris.id} - {baris.teks}
-              </p>
-            ))}
-        </section>
-        <section>
-          <h1>Scan KTM</h1>
-          <form onSubmit={this.handleSubmit}>
-            <div>
-              <input type="text" id="nama" onChange={this.handleChange} />
-              <label htmlFor="nama">Nama Mhs</label>
-            </div>
-            <div>
-              <input type="text" id="nim" onChange={this.handleChange} />
-              <label htmlFor="nim">NIM</label>
-            </div>
-            <div>
-              <button>Scan!</button>
-            </div>
-          </form>
-        </section>
-      </>
-    )
-  }
+  //   this.props.scanKTM(this.state)
+  // }
+
+  // const { tatacara } = this.props
+  // {tatacara &&
+  //   tatacara.map(baris => (
+  //     <p key={baris.id}>
+  //       {baris.id} - {baris.teks}
+  //     </p>
+  //   ))}
+  return (
+    <Container component="main" maxWidth="sm">
+      <CssBaseline />
+      <div className={classes.paper}>
+        <Typography component="h1" variant="h4">
+          Tata Cara Pemilihan Umum Raya
+        </Typography>
+        <Typography component="h1" variant="h5">
+          UIN Jakarta 2019
+        </Typography>
+        <Box m={4} textAlign="left" width="1">
+          {state.map(i => (
+            <Typography component="h1" variant="subtitle2">
+              {i}
+            </Typography>
+          ))}
+        </Box>
+        <Link to="/tatacara">
+          <Button
+            className={classes.submit}
+            variant="contained"
+            color="primary"
+          >
+            Scan KTM
+          </Button>
+        </Link>
+      </div>
+    </Container>
+  )
 }
 
-const mapStateToProps = state => {
-  return {
-    tatacara: state.firestore.ordered.tatacara,
-  }
-}
+export default TatacaraPage
 
-const mapDispatchToProps = dispatch => {
-  return {
-    scanKTM: credentials => dispatch(scanKTM(credentials)),
-  }
-}
+// const mapStateToProps = state => {
+//   return {
+//     tatacara: state.firestore.ordered.tatacara,
+//   }
+// }
 
-export default compose(
-  connect(mapStateToProps, mapDispatchToProps),
-  firestoreConnect([{ collection: 'tatacara' }])
-)(TatacaraPage)
+// const mapDispatchToProps = dispatch => {
+//   return {
+//     scanKTM: credentials => dispatch(scanKTM(credentials)),
+//   }
+// }
+
+// export default compose(
+//   connect(mapStateToProps, mapDispatchToProps),
+//   firestoreConnect([{ collection: 'tatacara' }])
+// )(TatacaraPage)
