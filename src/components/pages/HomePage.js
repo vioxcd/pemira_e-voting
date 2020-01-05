@@ -13,6 +13,9 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'column',
     alignItems: 'center',
   },
+  text: {
+    marginTop: "0.25rem",
+  },
   submit: {
     margin: theme.spacing(2, 0, 2),
   },
@@ -25,11 +28,11 @@ function HomePage() {
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
-        <img width="70%" src="/logo uin.png" alt="Logo UIN Jakarta" />
-        <Typography component="h1" variant="h4">
+        <img style={{ marginBottom: "0.5rem" }} width="70%" src="/logo uin.png" alt="Logo UIN Jakarta" />
+        <Typography className={classes.text} component="h1" variant="h4" align="center">
           Pemilihan Umum Raya
         </Typography>
-        <Typography component="h1" variant="h5">
+        <Typography className={classes.text} component="h1" variant="h5" align="center">
           UIN Jakarta 2019
         </Typography>
         <Link to="/tatacara">

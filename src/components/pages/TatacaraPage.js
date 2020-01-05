@@ -4,14 +4,19 @@ import React from 'react'
 // import { firestoreConnect } from 'react-redux-firebase'
 // import { scanKTM } from '../../store/actions/publicActions'
 import Button from '@material-ui/core/Button'
+import IconButton from '@material-ui/core/IconButton'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container'
+import CameraAltIcon from '@material-ui/icons/CameraAlt'
 import Box from '@material-ui/core/Box'
-import { Link } from 'react-router-dom'
+import { Link, Redirect } from 'react-router-dom'
 
 const useStyles = makeStyles(theme => ({
+  input: {
+    display: 'none',
+  },
   paper: {
     marginTop: theme.spacing(8),
     display: 'flex',
@@ -22,43 +27,80 @@ const useStyles = makeStyles(theme => ({
 
 function TatacaraPage() {
   const classes = useStyles()
+  const [redirect, setRedirect] = React.useState(false)
   const state = [
     '1. Mahasiswa aktif UIN Syarif Hidayatullah Jakarta',
     '2. Memiliki Kartu Tanda Mahasiswa (KTM)',
-    '3. etc etc etc',
   ]
-  // state = {
-  //   nama: '',
-  //   nim: '',
-  // }
 
-  // handleChange = e => {
-  //   this.setState({
-  //     [e.target.id]: e.target.value,
-  //   })
-  // }
+  const testVision = data => {
+    const bearer =
+      'ya29.c.KmO4B6nJ1SZ-WLpCxKnVMZtR6M9YLBMJo5GiQGCJ6g-QfiXZ4MzplfeUdbcQWr_3bWNuaYuyBglhm17Oi0bAcDzV3Vcz42K3sfsRem77yJTCNBZdghBGma9pToPl4yj8HCKuRH0'
+    const url = `https://vision.googleapis.com/v1p4beta1/images:annotate`
+    const requestBody = {
+      requests: [
+        {
+          image: {
+            content: data.slice(23),
+          },
+          features: [
+            {
+              type: 'TEXT_DETECTION',
+            },
+          ],
+        },
+      ],
+    }
 
-  // handleSubmit = e => {
-  //   e.preventDefault()
+    fetch(url, {
+      method: 'POST',
+      headers: new Headers({
+        'Content-Type': 'application/json;charset=utf-8',
+        Authorization: `Bearer ${bearer}`,
+      }),
+      body: JSON.stringify(requestBody),
+    })
+      .then(response => response.json())
+      .then(json => {
+        console.log(json.responses[0].fullTextAnnotation.text)
+        const fullText = json.responses[0].fullTextAnnotation.text
+        const data = fullText.split('\n')
 
-  //   this.props.scanKTM(this.state)
-  // }
+        for (const x of data) {
+          if (!isNaN(x)) {
+            console.log(x)
+          }
+        }
+      })
+      .then(() => {
+        setRedirect(true)
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
 
-  // const { tatacara } = this.props
-  // {tatacara &&
-  //   tatacara.map(baris => (
-  //     <p key={baris.id}>
-  //       {baris.id} - {baris.teks}
-  //     </p>
-  //   ))}
+  const encodeImageFileAsURL = e => {
+    var file = e.target.files[0]
+    var reader = new FileReader()
+    reader.onloadend = function() {
+      testVision(reader.result)
+    }
+    reader.readAsDataURL(file)
+  }
+
+  if (redirect) {
+    return <Redirect to="/vote" />
+  }
+
   return (
     <Container component="main" maxWidth="sm">
       <CssBaseline />
       <div className={classes.paper}>
-        <Typography component="h1" variant="h4">
+        <Typography component="h1" variant="h4" align="center">
           Tata Cara Pemilihan Umum Raya
         </Typography>
-        <Typography component="h1" variant="h5">
+        <Typography component="h1" variant="h5" align="center">
           UIN Jakarta 2019
         </Typography>
         <Box m={4} textAlign="left" width="1">
@@ -68,15 +110,26 @@ function TatacaraPage() {
             </Typography>
           ))}
         </Box>
-        <Link to="/tatacara">
-          <Button
-            className={classes.submit}
-            variant="contained"
+        <input
+          type="file"
+          accept="image/*"
+          capture
+          onChange={encodeImageFileAsURL}
+          className={classes.input}
+          id="upload-ktm"
+        />
+        <label htmlFor="upload-ktm">
+          <IconButton
             color="primary"
+            aria-label="upload picture"
+            component="span"
           >
-            Scan KTM
-          </Button>
-        </Link>
+            <Button variant="contained" color="primary" component="span">
+              Scan KTM
+              <CameraAltIcon style={{ marginLeft: 10 }} />
+            </Button>
+          </IconButton>
+        </label>
       </div>
     </Container>
   )

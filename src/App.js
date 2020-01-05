@@ -12,7 +12,7 @@ function App() {
   return (
     <BrowserRouter>
       <div className="App">
-        <Navbar />
+        {/* <Navbar /> */}
         <Switch>
           <Route exact path="/" component={HomePage} />
           <Route path="/tatacara" component={TatacaraPage} />
