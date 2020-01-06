@@ -1,8 +1,8 @@
 import React from 'react'
-// import { connect } from 'react-redux'
-// import { compose } from 'redux'
-// import { firestoreConnect } from 'react-redux-firebase'
-// import { scanKTM } from '../../store/actions/publicActions'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { firestoreConnect } from 'react-redux-firebase'
+import { scanKTM } from '../../store/actions/publicActions'
 import Button from '@material-ui/core/Button'
 import IconButton from '@material-ui/core/IconButton'
 import CssBaseline from '@material-ui/core/CssBaseline'
@@ -35,7 +35,7 @@ function TatacaraPage() {
 
   const testVision = data => {
     const bearer =
-      'ya29.c.KmO4B6nJ1SZ-WLpCxKnVMZtR6M9YLBMJo5GiQGCJ6g-QfiXZ4MzplfeUdbcQWr_3bWNuaYuyBglhm17Oi0bAcDzV3Vcz42K3sfsRem77yJTCNBZdghBGma9pToPl4yj8HCKuRH0'
+      'ya29.c.KmO4B16bEvvRYvFmpnN3CjeKAzqKHBJYRi5qeTA-OY-fm0XXGzUyjta1adfKWJyUGLc2H34CoffdXKZpIaL85xslVsZ5ydocHoaoOfAoDsQpBId5ctIg_H6n0VRpytvHG3obaYI'
     const url = `https://vision.googleapis.com/v1p4beta1/images:annotate`
     const requestBody = {
       requests: [
@@ -135,7 +135,7 @@ function TatacaraPage() {
   )
 }
 
-export default TatacaraPage
+// export default TatacaraPage
 
 // const mapStateToProps = state => {
 //   return {
@@ -143,11 +143,13 @@ export default TatacaraPage
 //   }
 // }
 
-// const mapDispatchToProps = dispatch => {
-//   return {
-//     scanKTM: credentials => dispatch(scanKTM(credentials)),
-//   }
-// }
+const mapDispatchToProps = dispatch => {
+  return {
+    scanKTM: credentials => dispatch(scanKTM(credentials)),
+  }
+}
+
+export default connect(null, mapDispatchToProps)(TatacaraPage)
 
 // export default compose(
 //   connect(mapStateToProps, mapDispatchToProps),

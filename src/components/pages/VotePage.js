@@ -48,16 +48,16 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-const steps = ['Universitas', 'Fakultas', 'Himpunan Jurusan']
+const steps = ['Universitas'/* , 'Fakultas', 'Himpunan Jurusan' */]
 
 function getStepContent(step) {
   switch (step) {
     case 0:
       return <ListKandidat />
-    case 1:
-      return <ListKandidat />
-    case 2:
-      return <ListKandidat />
+    // case 1:
+    //   return <ListKandidat />
+    // case 2:
+    //   return <ListKandidat />
     default:
       throw new Error('Unknown step')
   }

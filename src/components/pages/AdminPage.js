@@ -1,82 +1,94 @@
-import React, { Component } from 'react'
-import { compose } from 'redux'
-import { connect } from 'react-redux'
-import { firestoreConnect } from 'react-redux-firebase'
-import { loginAdmin, tambahKandidat } from '../../store/actions/adminActions'
+import React, { useState } from 'react'
+import AppBar from '@material-ui/core/AppBar'
+import Toolbar from '@material-ui/core/Toolbar'
+import CssBaseline from '@material-ui/core/CssBaseline'
+import Typography from '@material-ui/core/Typography'
+import Container from '@material-ui/core/Container'
+import { makeStyles } from '@material-ui/core/styles'
 
-class AdminPage extends Component {
-  state = {
-    username: '',
-    password: '',
-    calon_1: '',
-    calon_2: '',
-    tingkat: '',
-    fakultas: '',
-  }
+// import { compose } from 'redux'
+import { connect, useSelector } from 'react-redux'
+import { useFirestoreConnect } from 'react-redux-firebase'
+import { tambahKandidat } from '../../store/actions/adminActions'
 
-  handleChange = e => {
-    this.setState({
-      [e.target.id]: e.target.value,
-    })
-  }
+const useStyles = makeStyles(theme => ({
+  root: {
+    flexGrow: 1,
+  },
+  menuButton: {
+    marginRight: theme.spacing(2),
+  },
+  title: {
+    flexGrow: 1,
+  },
+}))
 
-  handleSubmit = e => {
+const AdminPage = props => {
+  const classes = useStyles()
+
+  useFirestoreConnect([{ collection: 'calon' }])
+  const calon = useSelector(state => {
+    return state.firestore.ordered.calon
+  })
+
+  const [namaCalon1, setNamaCalon1] = useState(null)
+  const [namaCalon2, setNamaCalon2] = useState(null)
+  const [nimCalon1, setNimCalon1] = useState(null)
+  const [nimCalon2, setNimCalon2] = useState(null)
+  const [foto, setFoto] = useState(null)
+
+  const handleTambahKandidat = e => {
     e.preventDefault()
-
-    const { username, password } = this.state
-    this.props.loginAdmin({ username, password })
+    console.log(`c1: ${namaCalon1} ${nimCalon1}`)
+    console.log(`c2: ${namaCalon2} ${nimCalon2}`)
+    // props.tambahKandidat(kandidat)
   }
 
-  handleTambahKandidat = e => {
-    e.preventDefault()
-
-    const { username, password, ...kandidat } = this.state
-    this.props.tambahKandidat(kandidat)
-  }
-
-  render() {
-    const { kandidat } = this.props
-    return (
-      <>
+  return (
+    <>
+      <AppBar position="static">
+        <Toolbar>
+          <Typography variant="h6" className={classes.title}>
+            Dashboard Admin
+          </Typography>
+        </Toolbar>
+      </AppBar>
+      <Container component="main" maxWidth="xl">
+        <CssBaseline />
         <section>
-          <h1>Login Admin</h1>
-          <form onSubmit={this.handleSubmit}>
+          <h1>Kandidat Terdaftar</h1>
+          <form onSubmit={handleTambahKandidat}>
             <div>
-              <input type="text" id="username" onChange={this.handleChange} />
-              <label htmlFor="username">Username</label>
+              <input
+                type="text"
+                id="nama_calon_1"
+                onChange={e => setNamaCalon1(e.target.value)}
+              />
+              <label htmlFor="nama_calon_1">Nama Calon 1</label>
             </div>
             <div>
               <input
-                type="password"
-                id="password"
-                onChange={this.handleChange}
+                type="text"
+                id="nim_calon_1"
+                onChange={e => setNimCalon1(e.target.value)}
               />
-              <label htmlFor="password">Password</label>
+              <label htmlFor="nim_calon_1">NIM Calon 1</label>
             </div>
             <div>
-              <button>Create</button>
-            </div>
-          </form>
-        </section>
-        <hr />
-        <section>
-          <h1>Tambah Kandidat</h1>
-          <form onSubmit={this.handleTambahKandidat}>
-            <div>
-              <input type="text" id="calon_1" onChange={this.handleChange} />
-              <label htmlFor="calon_1">Calon 1</label>
+              <input
+                type="text"
+                id="nama_calon_2"
+                onChange={e => setNamaCalon2(e.target.value)}
+              />
+              <label htmlFor="nama_calon_2">Nama Calon 2</label>
             </div>
             <div>
-              <input type="text" id="calon_2" onChange={this.handleChange} />
-              <label htmlFor="calon_2">Calon 2</label>
-            </div>
-            <div>
-              <input type="text" id="tingkat" onChange={this.handleChange} />
-              <label htmlFor="tingkat">Tingkat</label>
-            </div>
-            <div>
-              <input type="text" id="fakultas" onChange={this.handleChange} />
-              <label htmlFor="fakultas">Fakultas</label>
+              <input
+                type="text"
+                id="nim_calon_2"
+                onChange={e => setNimCalon2(e.target.value)}
+              />
+              <label htmlFor="nim_calon_2">NIM Calon 2</label>
             </div>
             <div>
               <button>Create</button>
@@ -84,38 +96,41 @@ class AdminPage extends Component {
           </form>
         </section>
         <section>
-          {kandidat &&
-            kandidat.map(info => (
-              <div key={info.no}>
-                <h4>{info.no}</h4>
+          {calon &&
+            calon.map(c => (
+              <div key={c.id}>
+                <h4>{c.id}</h4>
                 <p>
-                  {info.calon_1.nama}, {info.calon_1.nim}
+                  {c.calon_1.nama}, {c.calon_1.nim}
                 </p>
                 <p>
-                  {info.calon_2.nama}, {info.calon_2.nim}
+                  {c.calon_2.nama}, {c.calon_2.nim}
                 </p>
               </div>
             ))}
         </section>
-      </>
-    )
-  }
+      </Container>
+    </>
+  )
 }
 
-const mapStateToProps = state => {
-  return {
-    kandidat: state.firestore.ordered.kandidat,
-  }
-}
+// export default AdminPage
+
+// const mapStateToProps = state => {
+//   return {
+//     kandidat: state.firestore.ordered.calon,
+//   }
+// }
 
 const mapDispatchToProps = dispatch => {
   return {
-    loginAdmin: credentials => dispatch(loginAdmin(credentials)),
     tambahKandidat: kandidat => dispatch(tambahKandidat(kandidat)),
   }
 }
 
-export default compose(
-  connect(mapStateToProps, mapDispatchToProps),
-  firestoreConnect([{ collection: 'kandidat' }])
-)(AdminPage)
+export default connect(null, mapDispatchToProps)(AdminPage)
+
+// export default compose(
+//   connect(mapStateToProps, mapDispatchToProps),
+//   firestoreConnect([{ collection: 'calon' }])
+// )(AdminPage)

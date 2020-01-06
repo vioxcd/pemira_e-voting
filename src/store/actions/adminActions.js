@@ -1,20 +1,29 @@
-export const loginAdmin = credentials => {
+export const loginAdmin = (credentials, ownProps) => {
   return (dispatch, getState, { getFirebase, getFirestore }) => {
     // Make async calls to database
     const firestore = getFirestore()
+
     firestore
       .get({
         collection: 'admin',
-        where: [
-          ['username', '==', 'admin'],
-          ['password', '==', 'admin'],
-        ],
+        doc: 'admin',
       })
-      .then(() => {
+      .then(response => {
+        const { username, password } = response.data()
+
+        if (
+          username !== credentials.username ||
+          password !== credentials.password
+        ) {
+          throw new Error('Credentials didnt match')
+        }
+
         dispatch({
           type: 'ADMIN_LOGIN_SUCCESSFUL',
           credentials,
         })
+
+        ownProps.history.push('/admin')
       })
       .catch(err => {
         dispatch({
