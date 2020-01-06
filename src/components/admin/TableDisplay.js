@@ -8,9 +8,10 @@ import TableContainer from '@material-ui/core/TableContainer'
 import TableHead from '@material-ui/core/TableHead'
 import TablePagination from '@material-ui/core/TablePagination'
 import TableRow from '@material-ui/core/TableRow'
+import Link from '@material-ui/core/Link'
 
 const columns = [
-  { id: 'nomor', label: 'No', minWidth: 50 },
+  { id: 'nomor_urut', label: 'No', minWidth: 50 },
   { id: 'calon_1_nama', label: 'Nama Calon 1', minWidth: 170 },
   {
     id: 'calon_1_nim',
@@ -28,9 +29,14 @@ const columns = [
     minWidth: 170,
   },
   {
-    id: 'foto',
+    id: 'foto_kampanye',
     label: 'Foto Kandidat',
     minWidth: 170,
+    format: value => (
+      <Link href={value} target="_blank" rel="noopener">
+        Link
+      </Link>
+    ),
   },
 ]
 
@@ -86,14 +92,11 @@ export default function TableDisplay({ listKandidat }) {
                     tabIndex={-1}
                     key={kandidat.id}
                   >
-                    <TableCell>{kandidat.id}</TableCell>
                     {columns.map(column => {
-                      if (column.id === 'nomor') return
-
                       const value = kandidat[column.id]
                       return (
                         <TableCell key={column.id} align={column.align}>
-                          {value}
+                          {column.format ? column.format(value) : value}
                         </TableCell>
                       )
                     })}

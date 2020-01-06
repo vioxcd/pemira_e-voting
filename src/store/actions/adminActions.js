@@ -34,20 +34,17 @@ export const loginAdmin = (credentials, ownProps) => {
   }
 }
 
-export const tambahKandidat = (nomorKandidat, kandidat) => {
+export const tambahKandidat = kandidat => {
   return (dispatch, getState, { getFirebase, getFirestore }) => {
     // Make async calls to database
     const firestore = getFirestore()
     firestore
-      .set(
-        { collection: 'calon', doc: `${nomorKandidat}` },
-        {
-          ...kandidat,
-          perolehan_suara: 0,
-          tanggal_pendaftaran: new Date(),
-          foto_kampanye: 'https://picsum.photos/id/237/200/300',
-        }
-      )
+      .collection('calon')
+      .add({
+        ...kandidat,
+        perolehan_suara: 0,
+        tanggal_pendaftaran: new Date(),
+      })
       .then(() => {
         dispatch({
           type: 'SUCCESS_TAMBAH_KANDIDAT',
@@ -60,27 +57,5 @@ export const tambahKandidat = (nomorKandidat, kandidat) => {
           err,
         })
       })
-
-    // firestore
-    //   .collection('kandidat')
-    //   .add({
-    //     ...kandidat,
-    //     no: 1,
-    //     perolehan_suara: 0,
-    //     tanggal_pendaftaran: new Date(),
-    //     foto_kampanye: 'https://picsum.photos/id/237/200/300',
-    //   })
-    //   .then(() => {
-    //     dispatch({
-    //       type: 'TAMBAH_KANDIDAT',
-    //       kandidat,
-    //     })
-    //   })
-    //   .catch(err => {
-    //     dispatch({
-    //       type: 'ERROR_TAMBAH_KANDIDAT',
-    //       err,
-    //     })
-    //   })
   }
 }

@@ -35,7 +35,7 @@ function TatacaraPage() {
 
   const testVision = data => {
     const bearer =
-      'ya29.c.KmO4B16bEvvRYvFmpnN3CjeKAzqKHBJYRi5qeTA-OY-fm0XXGzUyjta1adfKWJyUGLc2H34CoffdXKZpIaL85xslVsZ5ydocHoaoOfAoDsQpBId5ctIg_H6n0VRpytvHG3obaYI'
+      'ya29.c.KmO4B1v4pp7o8c9FYS8mHkzqeTRs-txCchHMjtQrPUukVNQBSZTrfOi5SGTJRzziEBa2_FuDD6etqBISJG7bDv2_2Gy1NVAnLQGMNaCnkQ1f5bbRUX45sKFUM6duTRqpzUlfd_Y'
     const url = `https://vision.googleapis.com/v1p4beta1/images:annotate`
     const requestBody = {
       requests: [

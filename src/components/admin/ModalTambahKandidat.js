@@ -9,7 +9,9 @@ import Grid from '@material-ui/core/Grid'
 import PhotoCamera from '@material-ui/icons/PhotoCamera'
 import { makeStyles } from '@material-ui/core/styles'
 
+import uniqid from 'uniqid'
 import { connect } from 'react-redux'
+import { useFirebase } from 'react-redux-firebase'
 import { tambahKandidat } from '../../store/actions/adminActions'
 
 const useStyles = makeStyles(theme => ({
@@ -19,8 +21,10 @@ const useStyles = makeStyles(theme => ({
 }))
 
 function ModalTambahKandidat(props) {
-  const nomorKandidat = props.nomorKandidat
+  const firebase = useFirebase()
   const classes = useStyles()
+
+  const nomorKandidat = props.nomorKandidat
 
   const [open, setOpen] = useState(false)
 
@@ -29,6 +33,7 @@ function ModalTambahKandidat(props) {
   const [nimCalon1, setNIMCalon1] = useState(null)
   const [nimCalon2, setNIMCalon2] = useState(null)
   const [foto, setFoto] = useState(null)
+  const [fotoUrl, setFotoUrl] = useState(null)
 
   const handleTambahKandidat = e => {
     e.preventDefault()
@@ -38,16 +43,20 @@ function ModalTambahKandidat(props) {
     console.log(`c2: ${namaCalon2} ${nimCalon2}`)
     console.log(`foto: ${foto}`)
 
-    handleFileUpload(foto)
+    const tambahKandidatCallback = namaFile => {
+      const kandidat = {
+        calon_1_nama: namaCalon1,
+        calon_1_nim: nimCalon1,
+        calon_2_nama: namaCalon2,
+        calon_2_nim: nimCalon2,
+        nomor_urut: nomorKandidat,
+        foto_kampanye: namaFile,
+      }
 
-    const kandidat = {
-      calon_1_nama: namaCalon1,
-      calon_1_nim: nimCalon1,
-      calon_2_nama: namaCalon2,
-      calon_2_nim: nimCalon2,
+      props.tambahKandidat(kandidat)
     }
 
-    props.tambahKandidat(nomorKandidat, kandidat)
+    handleFileUpload(foto, tambahKandidatCallback)
   }
 
   const handleClickOpen = () => {
@@ -58,8 +67,72 @@ function ModalTambahKandidat(props) {
     setOpen(false)
   }
 
-  const handleFileUpload = () => {
-    console.log('File Upload')
+  const handleFileUpload = (foto, cb) => {
+    // Create the file metadata
+    const metadata = {
+      contentType: foto.type,
+    }
+
+    const storageRef = firebase.storage().ref()
+
+    const uploadTask = storageRef
+      .child('images/' + uniqid())
+      .put(foto, metadata)
+
+    // Listen for state changes, errors, and completion of the upload.
+    uploadTask.on(
+      firebase.storage.TaskEvent.STATE_CHANGED, // or 'state_changed'
+      function(snapshot) {
+        // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+        var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+        console.log('Upload is ' + progress + '% done')
+        switch (snapshot.state) {
+          case firebase.storage.TaskState.PAUSED: // or 'paused'
+            console.log('Upload is paused')
+            break
+          case firebase.storage.TaskState.RUNNING: // or 'running'
+            console.log('Upload is running')
+            break
+          default:
+            console.log('Default')
+            break
+        }
+      },
+      function(error) {
+        // A full list of error codes is available at
+        // https://firebase.google.com/docs/storage/web/handle-errors
+        switch (error.code) {
+          case 'storage/unauthorized':
+            // User doesn't have permission to access the object
+            break
+          case 'storage/canceled':
+            // User canceled the upload
+            break
+          case 'storage/unknown':
+            // Unknown error occurred, inspect error.serverResponse
+            break
+          default:
+            console.log('Uploaded')
+            break
+        }
+      },
+      function() {
+        // Upload completed successfully, now we can get the download URL
+        uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
+          console.log('File available at', downloadURL)
+          cb(downloadURL)
+        })
+      }
+    )
+
+    // Test
+    const result = uploadTask.snapshot.ref
+      .getDownloadURL()
+      .then(downloadUrl => {
+        setFotoUrl(downloadUrl)
+        return downloadUrl
+      })
+    return result
   }
 
   return (
@@ -146,8 +219,7 @@ function ModalTambahKandidat(props) {
 
 const mapDispatchToProps = dispatch => {
   return {
-    tambahKandidat: (nomorKandidat, kandidat) =>
-      dispatch(tambahKandidat(nomorKandidat, kandidat)),
+    tambahKandidat: kandidat => dispatch(tambahKandidat(kandidat)),
   }
 }
 
