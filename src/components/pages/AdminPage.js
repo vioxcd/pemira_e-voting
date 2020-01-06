@@ -9,9 +9,8 @@ import Box from '@material-ui/core/Box'
 import { makeStyles } from '@material-ui/core/styles'
 
 // import { compose } from 'redux'
-import { connect, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { useFirestoreConnect } from 'react-redux-firebase'
-import { tambahKandidat } from '../../store/actions/adminActions'
 
 import TableDisplay from '../admin/TableDisplay'
 import ModalTambahKandidat from '../admin/ModalTambahKandidat'
@@ -33,8 +32,10 @@ const AdminPage = props => {
 
   useFirestoreConnect([{ collection: 'calon' }])
   const listKandidat = useSelector(state => {
-    return state.firestore.ordered.calon
+    return state.firestore.ordered.calon || null
   })
+
+  const nomorKandidat = listKandidat ? listKandidat.length + 1 : 1
 
   return (
     <>
@@ -49,7 +50,7 @@ const AdminPage = props => {
         <CssBaseline />
         <section>
           <h1>Kandidat Terdaftar</h1>
-          <ModalTambahKandidat />
+          <ModalTambahKandidat nomorKandidat={nomorKandidat} />
         </section>
         <Box display="flex" justifyContent="center" mt={2}>
           {listKandidat ? (
@@ -63,10 +64,4 @@ const AdminPage = props => {
   )
 }
 
-const mapDispatchToProps = dispatch => {
-  return {
-    tambahKandidat: kandidat => dispatch(tambahKandidat(kandidat)),
-  }
-}
-
-export default connect(null, mapDispatchToProps)(AdminPage)
+export default AdminPage

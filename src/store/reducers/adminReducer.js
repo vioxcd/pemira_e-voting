@@ -2,7 +2,7 @@ const initState = {}
 
 const adminReducers = (state = initState, action) => {
   switch (action.type) {
-    case 'TAMBAH_KANDIDAT':
+    case 'SUCCESS_TAMBAH_KANDIDAT':
       console.log('Tambahan Kandidat', action.kandidat)
       return state
     case 'ERROR_TAMBAH_KANDIDAT':
