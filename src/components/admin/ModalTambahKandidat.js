@@ -33,7 +33,6 @@ function ModalTambahKandidat(props) {
   const [nimCalon1, setNIMCalon1] = useState(null)
   const [nimCalon2, setNIMCalon2] = useState(null)
   const [foto, setFoto] = useState(null)
-  const [fotoUrl, setFotoUrl] = useState(null)
 
   const handleTambahKandidat = e => {
     e.preventDefault()
@@ -124,15 +123,6 @@ function ModalTambahKandidat(props) {
         })
       }
     )
-
-    // Test
-    const result = uploadTask.snapshot.ref
-      .getDownloadURL()
-      .then(downloadUrl => {
-        setFotoUrl(downloadUrl)
-        return downloadUrl
-      })
-    return result
   }
 
   return (
