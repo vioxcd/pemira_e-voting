@@ -72,7 +72,7 @@ function getStepContent(step, listKandidat, pilihan, setPilihan) {
 }
 
 function VotePage(props) {
-  console.log(props)
+  const { mhs, submitVote } = props
   const classes = useStyles()
 
   useFirestoreConnect([{ collection: 'calon' }])
@@ -93,7 +93,13 @@ function VotePage(props) {
 
   const handleSubmit = () => {
     setActiveStep(activeStep + 1)
-    console.log(pilihan)
+
+    const mhs = {
+      nim: '11160910000052',
+    }
+    console.log(pilihan, mhs.nim)
+
+    submitVote(pilihan, mhs.nim)
   }
 
   return (
@@ -116,7 +122,8 @@ function VotePage(props) {
               <>
                 {/* Bagian Sukses */}
                 <Typography variant="h5" gutterBottom>
-                  Sukses. <br /> Terima kasih telah menyalurkan suara Anda
+                  Sukses. <br /> Terima kasih, {mhs.nama} telah menyalurkan
+                  suara Anda
                 </Typography>
                 <Link to="/publik">
                   <Typography variant="subtitle1">Lihat Statistik</Typography>
@@ -153,13 +160,13 @@ function VotePage(props) {
 
 const mapStateToprops = state => {
   return {
-    nim: state.public,
+    mhs: state.public.mhs,
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    submitVote: votes => dispatch(submitVote(votes)),
+    submitVote: (pilihan, nim) => dispatch(submitVote(pilihan, nim)),
   }
 }
 

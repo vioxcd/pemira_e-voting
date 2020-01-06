@@ -1,4 +1,6 @@
-const initState = {}
+const initState = {
+  perolehan_suara: 0,
+}
 
 const voteReducers = (state = initState, action) => {
   switch (action.type) {
@@ -7,6 +9,11 @@ const voteReducers = (state = initState, action) => {
       return state
     case 'VOTE_SUBMIT_FAILED':
       console.log('VOTE SUBMIT FAILED')
+      return state
+    case 'TRANSACTION_SUCCESS':
+      state.perolehan_suara += 1
+      return state
+    case 'TRANSACTION_FAILURE':
       return state
     default:
       return state

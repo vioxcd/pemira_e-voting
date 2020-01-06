@@ -6,7 +6,7 @@ import * as serviceWorker from './serviceWorker'
 import { createStore, applyMiddleware, compose } from 'redux'
 import { Provider } from 'react-redux'
 import thunk from 'redux-thunk'
-import { ReactReduxFirebaseProvider, useFirebase } from 'react-redux-firebase'
+import { ReactReduxFirebaseProvider, getFirebase } from 'react-redux-firebase'
 import {
   createFirestoreInstance,
   reduxFirestore,
@@ -24,7 +24,7 @@ firebase.initializeApp(firebaseConfig)
 const store = createStore(
   rootReducer,
   compose(
-    applyMiddleware(thunk.withExtraArgument({ useFirebase, getFirestore })),
+    applyMiddleware(thunk.withExtraArgument({ getFirebase, getFirestore })),
     reduxFirestore(firebase)
   )
 )

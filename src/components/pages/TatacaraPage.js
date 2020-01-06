@@ -25,8 +25,10 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-function TatacaraPage() {
+function TatacaraPage(props) {
   const classes = useStyles()
+  const { scanKTM } = props
+
   const [redirect, setRedirect] = React.useState(false)
   const state = [
     '1. Mahasiswa aktif UIN Syarif Hidayatullah Jakarta',
@@ -35,7 +37,7 @@ function TatacaraPage() {
 
   const testVision = data => {
     const bearer =
-      'ya29.c.KmO4B1v4pp7o8c9FYS8mHkzqeTRs-txCchHMjtQrPUukVNQBSZTrfOi5SGTJRzziEBa2_FuDD6etqBISJG7bDv2_2Gy1NVAnLQGMNaCnkQ1f5bbRUX45sKFUM6duTRqpzUlfd_Y'
+      'ya29.c.KmO4B7YYTFGNkK6sPTfc4hZZedCCFCnhQ4ktce7jqnQl7NCCswRv7HiVq4LpQSMtzwJW11VN897MmUujGeO2wnVviojo78ZH6kFYcvE4TUV87BzAsGbPBvexpv_rwQRFzEXZcZw'
     const url = `https://vision.googleapis.com/v1p4beta1/images:annotate`
     const requestBody = {
       requests: [
@@ -69,6 +71,7 @@ function TatacaraPage() {
         for (const x of data) {
           if (!isNaN(x)) {
             console.log(x)
+            scanKTM(x)
           }
         }
       })
@@ -137,7 +140,7 @@ function TatacaraPage() {
 
 const mapDispatchToProps = dispatch => {
   return {
-    scanKTM: credentials => dispatch(scanKTM(credentials)),
+    scanKTM: nim => dispatch(scanKTM(nim)),
   }
 }
 

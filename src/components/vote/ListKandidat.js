@@ -12,6 +12,8 @@ import Box from '@material-ui/core/Box'
 export default class ListKandidat extends Component {
   render() {
     const { listKandidat, pilihan, setPilihan } = this.props
+    const pilihanAnda =
+      pilihan && listKandidat.filter(kandidat => kandidat.id === pilihan)
 
     const kandidat = listKandidat && (
       <Grid container spacing={3}>
@@ -32,7 +34,7 @@ export default class ListKandidat extends Component {
                     width="70%"
                   />
                   <FormControlLabel
-                    value={kandidat.nomor_urut}
+                    value={kandidat.id}
                     control={<Radio color="primary" />}
                     label={`(${kandidat.nomor_urut}) ${kandidat.calon_1_nama} - ${kandidat.calon_2_nama}`}
                     labelPlacement="bottom"
@@ -50,7 +52,10 @@ export default class ListKandidat extends Component {
           Universitas
         </Typography>
         <Typography variant="h6" style={{ marginBottom: '2rem' }}>
-          Pilihan Anda: {pilihan}
+          Pilihan Anda:{' '}
+          {pilihanAnda
+            ? `${pilihanAnda[0].calon_1_nama} - ${pilihanAnda[0].calon_2_nama}`
+            : '-'}
         </Typography>
         {kandidat}
         {!listKandidat && (
