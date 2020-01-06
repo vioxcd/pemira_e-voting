@@ -126,7 +126,9 @@ function VotePage(props) {
                   suara Anda
                 </Typography>
                 <Link to="/publik">
-                  <Typography variant="subtitle1">Lihat Statistik</Typography>
+                  <Typography align="center" variant="subtitle1">
+                    Lihat Statistik
+                  </Typography>
                 </Link>
               </>
             ) : (
