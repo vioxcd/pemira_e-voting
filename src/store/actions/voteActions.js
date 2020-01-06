@@ -1,5 +1,5 @@
 // COBA POST UNIV
-export const submitVote = (pilihan, nim) => {
+export const submitVote = (pilihan, nim, vote) => {
   return (dispatch, getState, { getFirebase, getFirestore }) => {
     // Make async calls to database
     const firestore = getFirestore()
@@ -28,29 +28,29 @@ export const submitVote = (pilihan, nim) => {
       })
 
     // Menambah Perolehan Suara Sementara
-    const firebase = getFirebase()
-    const ref = firebase.ref(`calon/${pilihan}`)
-    console.log(ref)
-
-    // const ref = firebase.database().ref(`calon/${pilihan}`)
-    // firestore
-    //   .runTransaction(t => {
-    //     return t.get(ref).then(doc => {
-    //       const perolehanTerkini = doc.data().perolehan_suara + 1
-    //       t.update(ref, { perolehan_suara: perolehanTerkini })
-    //     })
-    //   })
-    //   .then(result => {
-    //     console.log('Transaction success!')
-    //     dispatch({
-    //       type: 'TRANSACTION_SUCCESS',
-    //     })
-    //   })
-    //   .catch(err => {
-    //     console.log('Transaction failure:', err)
-    //     dispatch({
-    //       type: 'TRANSACTION_FAILURE',
-    //     })
-    //   })
+    firestore
+      .update(
+        {
+          collection: 'calon',
+          doc: pilihan,
+        },
+        {
+          perolehan_suara: vote,
+        }
+      )
+      .then(() => {
+        console.log('Transaction success!')
+        dispatch({
+          type: 'TRANSACTION_SUCCESS',
+          pilihan,
+          vote,
+        })
+      })
+      .catch(err => {
+        console.log('Transaction failure:', err)
+        dispatch({
+          type: 'TRANSACTION_FAILURE',
+        })
+      })
   }
 }

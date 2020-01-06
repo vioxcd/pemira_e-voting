@@ -72,7 +72,7 @@ function getStepContent(step, listKandidat, pilihan, setPilihan) {
 }
 
 function VotePage(props) {
-  const { mhs, submitVote } = props
+  const { mhs, vote, submitVote } = props
   const classes = useStyles()
 
   useFirestoreConnect([{ collection: 'calon' }])
@@ -83,9 +83,9 @@ function VotePage(props) {
   const [activeStep, setActiveStep] = useState(0)
   const [pilihan, setPilihan] = useState('')
 
-  const handleNext = () => {
-    setActiveStep(activeStep + 1)
-  }
+  // const handleNext = () => {
+  //   setActiveStep(activeStep + 1)
+  // }
 
   const handleBack = () => {
     setActiveStep(activeStep - 1)
@@ -94,12 +94,12 @@ function VotePage(props) {
   const handleSubmit = () => {
     setActiveStep(activeStep + 1)
 
+    // TODO: REMOVE
     const mhs = {
       nim: '11160910000052',
     }
-    console.log(pilihan, mhs.nim)
 
-    submitVote(pilihan, mhs.nim)
+    submitVote(pilihan, mhs.nim, vote[pilihan] + 1)
   }
 
   return (
@@ -143,6 +143,7 @@ function VotePage(props) {
                     color="primary"
                     onClick={handleSubmit}
                     // onClick={handleNext}
+                    disabled={!pilihan}
                     className={classes.button}
                   >
                     {/* {activeStep === steps.length - 1 ? 'Selesai' : 'Lanjutkan'} */}
@@ -161,12 +162,14 @@ function VotePage(props) {
 const mapStateToprops = state => {
   return {
     mhs: state.public.mhs,
+    vote: state.vote,
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    submitVote: (pilihan, nim) => dispatch(submitVote(pilihan, nim)),
+    submitVote: (pilihan, nim, vote) =>
+      dispatch(submitVote(pilihan, nim, vote)),
   }
 }
 

@@ -21,8 +21,23 @@ import 'firebase/storage'
 
 firebase.initializeApp(firebaseConfig)
 
+// Persisted State
+const persistedState = { vote: {} }
+const db = firebase.firestore()
+
+db.collection('calon')
+  .get()
+  .then(querySnapshot => {
+    querySnapshot.forEach(doc => {
+      const tempData = doc.data()
+      persistedState.vote[doc.id] = tempData.perolehan_suara
+    })
+  })
+
+// Create Store
 const store = createStore(
   rootReducer,
+  persistedState,
   compose(
     applyMiddleware(thunk.withExtraArgument({ getFirebase, getFirestore })),
     reduxFirestore(firebase)
