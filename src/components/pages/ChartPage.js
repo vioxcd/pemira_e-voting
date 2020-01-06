@@ -1,55 +1,68 @@
-// import React, { Component } from 'react'
-// import Typography from '@material-ui/core/Typography'
-// import Moment from 'react-moment'
-// import { BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts'
-// import moment from 'moment'
+import React, { Component } from 'react'
+import CssBaseline from '@material-ui/core/CssBaseline'
+import Container from '@material-ui/core/Container'
+import Box from '@material-ui/core/Box'
+import Typography from '@material-ui/core/Typography'
+import CircularProgress from '@material-ui/core/CircularProgress'
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts'
 
-// const data = [
-//   { name: 'Page A', uv: 500, pv: 2400, amt: 2400 },
-//   { name: 'Page B', uv: 300, pv: 2400, amt: 2400 },
-// ]
+import { compose } from 'redux'
+import { connect } from 'react-redux'
+import { firestoreConnect } from 'react-redux-firebase'
 
-// const renderBarChart = (
-//   <BarChart width={600} height={300} data={data}>
-//     <XAxis dataKey="name" />
-//     <YAxis />
-//     <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-//     <Bar type="monotone" dataKey="uv" barSize={30} fill="#8884d8" />
-//   </BarChart>
-// )
+class ChartPage extends Component {
+  render() {
+    const { hasil } = this.props
+    const data =
+      hasil &&
+      hasil.map(calon => {
+        const pasangan = `${calon.calon_1_nama} - ${calon.calon_2_nama}`
+        const perolehan_suara = calon.perolehan_suara
+        return { pasangan, perolehan_suara }
+      })
 
-// export default class ChartPage extends Component {
-//   state = {
-//     tanggalDefault: new Date('2019-12-31T24:00:00+07:00'),
-//     durasiJam: '',
-//     durasiMenit: '',
-//     durasiDetik: '',
-//   }
+    console.log(data)
+    /**
+     * Render Chart
+     */
+    const renderBarChart = (
+      <BarChart width={600} height={300} data={data}>
+        <XAxis dataKey="pasangan" />
+        <YAxis />
+        <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
+        <Bar
+          type="monotone"
+          dataKey="perolehan_suara"
+          barSize={30}
+          fill="#8884d8"
+        />
+      </BarChart>
+    )
 
-//   setCountdown = () => {
-//     const waktuPenutupan = this.state.tanggalDefault.getTime()
-//     const waktuSekarang = Date.now()
-//     const selisihWaktu = waktuPenutupan - waktuSekarang
-//     const interval = 1000
-//     let durasi = moment.duration(selisihWaktu * 1000, 'milliseconds')
+    return (
+      <Container component="main" maxWidth="md" style={{ marginTop: '100px' }}>
+        <CssBaseline />
+        <Typography component="h1" variant="h4" align="center">
+          Hasil Quick Count Pemilihan Umum Raya
+        </Typography>
+        <Typography component="h1" variant="h5" align="center">
+          UIN Jakarta 2019
+        </Typography>
+        <Box display="flex" alignItems="center" justifyContent="center" mt={2}>
+          {data ? renderBarChart : <CircularProgress />}
+        </Box>
+      </Container>
+    )
+  }
+}
 
-//     setInterval(function() {
-//       durasi = moment.duration(durasi - interval, 'milliseconds')
+const mapStateToprops = state => {
+  return {
+    hasil: state.firestore.ordered.calon,
+  }
+}
 
-//       $('.countdown').text(
-//         duration.hours() + ':' + duration.minutes() + ':' + duration.seconds()
-//       )
-//     }, interval)
-//   }
-
-//   render() {
-//     return (
-//       <div>
-//         <Typography variant="subtitle2" gutterBottom>
-//           <Moment interval={1000}>{Date.now()}</Moment>
-//         </Typography>
-//         {renderBarChart}
-//       </div>
-//     )
-//   }
-// }
+export default compose(
+  connect(mapStateToprops),
+  firestoreConnect([{ collection: 'calon' }])
+)(ChartPage)

@@ -18,7 +18,7 @@ function App() {
           <Route path="/test" component={TestPage} />
           <Route path="/login" component={AdminLoginPage} />
           <Route path="/admin" component={AdminPage} />
-          {/* <Route path="/publik" component={ChartPage} /> */}
+          <Route path="/publik" component={ChartPage} />
           <Route path="/vote" component={VotePage} />
         </Switch>
       </div>

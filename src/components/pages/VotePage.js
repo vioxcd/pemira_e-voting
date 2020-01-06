@@ -174,8 +174,3 @@ const mapDispatchToProps = dispatch => {
 }
 
 export default connect(mapStateToprops, mapDispatchToProps)(VotePage)
-
-// export default compose(
-//   connect(mapStateToProps, mapDispatchToProps),
-//   firestoreConnect([{ collection: 'kandidat' }])
-// )(VotePage)
