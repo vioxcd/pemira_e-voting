@@ -1,8 +1,5 @@
-import React, { Component } from 'react'
-// import { compose } from 'redux'
-// import { connect } from 'react-redux'
-// import { firestoreConnect } from 'react-redux-firebase'
-// import { submitVote } from '../../store/actions/voteActions'
+import React, { useState } from 'react'
+
 import { makeStyles } from '@material-ui/core/styles'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import Paper from '@material-ui/core/Paper'
@@ -12,7 +9,12 @@ import StepLabel from '@material-ui/core/StepLabel'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 import { Link } from 'react-router-dom'
+
+import { connect, useSelector } from 'react-redux'
+import { useFirestoreConnect } from 'react-redux-firebase'
+
 import ListKandidat from '../vote/ListKandidat'
+import { submitVote } from '../../store/actions/voteActions'
 
 const useStyles = makeStyles(theme => ({
   layout: {
@@ -48,12 +50,18 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-const steps = ['Universitas'/* , 'Fakultas', 'Himpunan Jurusan' */]
+const steps = ['Universitas' /* , 'Fakultas', 'Himpunan Jurusan' */]
 
-function getStepContent(step) {
+function getStepContent(step, listKandidat, pilihan, setPilihan) {
   switch (step) {
     case 0:
-      return <ListKandidat />
+      return (
+        <ListKandidat
+          listKandidat={listKandidat}
+          pilihan={pilihan}
+          setPilihan={setPilihan}
+        />
+      )
     // case 1:
     //   return <ListKandidat />
     // case 2:
@@ -63,9 +71,17 @@ function getStepContent(step) {
   }
 }
 
-function VotePage() {
+function VotePage(props) {
+  console.log(props)
   const classes = useStyles()
-  const [activeStep, setActiveStep] = React.useState(0)
+
+  useFirestoreConnect([{ collection: 'calon' }])
+  const listKandidat = useSelector(state => {
+    return state.firestore.ordered.calon || null
+  })
+
+  const [activeStep, setActiveStep] = useState(0)
+  const [pilihan, setPilihan] = useState('')
 
   const handleNext = () => {
     setActiveStep(activeStep + 1)
@@ -73,6 +89,11 @@ function VotePage() {
 
   const handleBack = () => {
     setActiveStep(activeStep - 1)
+  }
+
+  const handleSubmit = () => {
+    setActiveStep(activeStep + 1)
+    console.log(pilihan)
   }
 
   return (
@@ -95,7 +116,7 @@ function VotePage() {
               <>
                 {/* Bagian Sukses */}
                 <Typography variant="h5" gutterBottom>
-                  Sukses. Terima Kasih telah menyalurkan suara Anda
+                  Sukses. <br /> Terima kasih telah menyalurkan suara Anda
                 </Typography>
                 <Link to="/publik">
                   <Typography variant="subtitle1">Lihat Statistik</Typography>
@@ -103,7 +124,7 @@ function VotePage() {
               </>
             ) : (
               <>
-                {getStepContent(activeStep)}
+                {getStepContent(activeStep, listKandidat, pilihan, setPilihan)}
                 <div className={classes.buttons}>
                   {activeStep !== 0 && (
                     <Button onClick={handleBack} className={classes.button}>
@@ -113,10 +134,12 @@ function VotePage() {
                   <Button
                     variant="contained"
                     color="primary"
-                    onClick={handleNext}
+                    onClick={handleSubmit}
+                    // onClick={handleNext}
                     className={classes.button}
                   >
-                    {activeStep === steps.length - 1 ? 'Selesai' : 'Lanjutkan'}
+                    {/* {activeStep === steps.length - 1 ? 'Selesai' : 'Lanjutkan'} */}
+                    Selesai
                   </Button>
                 </div>
               </>
@@ -128,21 +151,19 @@ function VotePage() {
   )
 }
 
-export default VotePage
+const mapStateToprops = state => {
+  return {
+    nim: state.public,
+  }
+}
 
-// const mapStateToProps = state => {
-//   return {
-//     kandidat: state.firestore.ordered.kandidat,
-//   }
-// }
+const mapDispatchToProps = dispatch => {
+  return {
+    submitVote: votes => dispatch(submitVote(votes)),
+  }
+}
 
-// const mapDispatchToProps = dispatch => {
-//   return {
-//     submitVote: votes => dispatch(submitVote(votes)),
-//   }
-// }
-
-// export default connect(null, mapDispatchToProps)(VotePage)
+export default connect(mapStateToprops, mapDispatchToProps)(VotePage)
 
 // export default compose(
 //   connect(mapStateToProps, mapDispatchToProps),

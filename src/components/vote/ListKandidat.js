@@ -1,60 +1,66 @@
-import React from 'react'
+import React, { Component } from 'react'
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
 import Radio from '@material-ui/core/Radio'
 import RadioGroup from '@material-ui/core/RadioGroup'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import FormControl from '@material-ui/core/FormControl'
+import CircularProgress from '@material-ui/core/CircularProgress'
+import Container from '@material-ui/core/Container'
 import Box from '@material-ui/core/Box'
 
-export default function ListKandidat() {
-  const [value, setValue] = React.useState('')
+export default class ListKandidat extends Component {
+  render() {
+    const { listKandidat, pilihan, setPilihan } = this.props
 
-  const handleChange = event => {
-    setValue(event.target.value)
-  }
-
-  return (
-    <>
-      <Typography variant="h6" gutterBottom>
-        Universitas
-      </Typography>
+    const kandidat = listKandidat && (
       <Grid container spacing={3}>
-        <RadioGroup
-          aria-label="position"
-          name="position"
-          value={value}
-          onChange={handleChange}
-          row
-        >
-          <Grid item xs={12} sm={6} textAlign="center">
-            <Box textAlign="center">
-              <img src="/img/krabs.png" alt="Kandidat 1" width="70%" />
-              <FormControl component="fieldset">
-                <FormControlLabel
-                  value="kandidat1"
-                  control={<Radio color="primary" />}
-                  label="Kandidat 1"
-                  labelPlacement="bottom"
-                />
-              </FormControl>
-            </Box>
-          </Grid>
-          <Grid item xs={12} sm={6} textAlign="center">
-            <Box textAlign="center">
-              <img src="/img/plankton.png" alt="Kandidat 1" width="70%" />
-              <FormControl component="fieldset">
-                <FormControlLabel
-                  value="kandidat2"
-                  control={<Radio color="primary" />}
-                  label="Kandidat 2"
-                  labelPlacement="bottom"
-                />
-              </FormControl>
-            </Box>
-          </Grid>
-        </RadioGroup>
+        <FormControl component="fieldset">
+          <RadioGroup
+            aria-label="kandidat"
+            name="kandidat"
+            value={pilihan}
+            onChange={e => setPilihan(e.target.value)}
+            row
+          >
+            {listKandidat.map(kandidat => (
+              <Grid item xs={12} sm={6} key={kandidat.id}>
+                <Box textAlign="center">
+                  <img
+                    src={kandidat.foto_kampanye}
+                    alt={`${kandidat.calon_1_nama} - ${kandidat.calon_2_nama}`}
+                    width="70%"
+                  />
+                  <FormControlLabel
+                    value={kandidat.nomor_urut}
+                    control={<Radio color="primary" />}
+                    label={`(${kandidat.nomor_urut}) ${kandidat.calon_1_nama} - ${kandidat.calon_2_nama}`}
+                    labelPlacement="bottom"
+                  />
+                </Box>
+              </Grid>
+            ))}
+          </RadioGroup>
+        </FormControl>
       </Grid>
-    </>
-  )
+    )
+    return (
+      <>
+        <Typography variant="h5" gutterBottom>
+          Universitas
+        </Typography>
+        <Typography variant="h6" style={{ marginBottom: '2rem' }}>
+          Pilihan Anda: {pilihan}
+        </Typography>
+        {kandidat}
+        {!listKandidat && (
+          <Container component="main" maxWidth="xl">
+            <Box display="flex" justifyContent="center" mt={2}>
+              <CircularProgress />
+            </Box>
+          </Container>
+        )}
+      </>
+    )
+  }
 }
