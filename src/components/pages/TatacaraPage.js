@@ -135,14 +135,6 @@ function TatacaraPage() {
   )
 }
 
-// export default TatacaraPage
-
-// const mapStateToProps = state => {
-//   return {
-//     tatacara: state.firestore.ordered.tatacara,
-//   }
-// }
-
 const mapDispatchToProps = dispatch => {
   return {
     scanKTM: credentials => dispatch(scanKTM(credentials)),
@@ -150,8 +142,3 @@ const mapDispatchToProps = dispatch => {
 }
 
 export default connect(null, mapDispatchToProps)(TatacaraPage)
-
-// export default compose(
-//   connect(mapStateToProps, mapDispatchToProps),
-//   firestoreConnect([{ collection: 'tatacara' }])
-// )(TatacaraPage)
