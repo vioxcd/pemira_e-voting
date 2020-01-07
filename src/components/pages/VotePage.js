@@ -95,9 +95,9 @@ function VotePage(props) {
     setActiveStep(activeStep + 1)
 
     // TODO: REMOVE
-    const mhs = {
-      nim: '11160910000052',
-    }
+    // const mhs = {
+    //   nim: '11160910000052',
+    // }
 
     submitVote(pilihan, mhs.nim, vote[pilihan] + 1)
   }
