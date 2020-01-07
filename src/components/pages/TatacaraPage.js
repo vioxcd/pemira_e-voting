@@ -30,7 +30,7 @@ function TatacaraPage(props) {
   const { scanKTM } = props
 
   const [redirect, setRedirect] = React.useState(false)
-  const state = [
+  const tatacara = [
     '1. Mahasiswa aktif UIN Syarif Hidayatullah Jakarta',
     '2. Memiliki Kartu Tanda Mahasiswa (KTM)',
   ]
@@ -107,9 +107,9 @@ function TatacaraPage(props) {
           UIN Jakarta 2019
         </Typography>
         <Box m={4} textAlign="left" width="1">
-          {state.map(i => (
-            <Typography component="h1" variant="subtitle2">
-              {i}
+          {tatacara.map((cara, index) => (
+            <Typography key={index} component="h1" variant="subtitle2">
+              {cara}
             </Typography>
           ))}
         </Box>
