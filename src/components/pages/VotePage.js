@@ -8,6 +8,7 @@ import Step from '@material-ui/core/Step'
 import StepLabel from '@material-ui/core/StepLabel'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
+import Container from '@material-ui/core/Container'
 import { Link } from 'react-router-dom'
 
 import { connect, useSelector } from 'react-redux'
@@ -72,7 +73,7 @@ function getStepContent(step, listKandidat, pilihan, setPilihan) {
 }
 
 function VotePage(props) {
-  const { mhs, vote, submitVote } = props
+  const { mhs, vote, err_code, submitVote } = props
   const classes = useStyles()
 
   useFirestoreConnect([{ collection: 'calon' }])
@@ -102,61 +103,90 @@ function VotePage(props) {
     submitVote(pilihan, mhs.nim, vote[pilihan] + 1)
   }
 
+  const errorPage = () => (
+    <Container component="main" maxWidth="sm">
+      <CssBaseline />
+      <div className={classes.paper}>
+        <Typography component="h1" variant="h4" align="center">
+          Anda telah melakukan pemilihan
+        </Typography>
+        <Typography component="h1" variant="h5" align="center">
+          <Link to="/publik">
+            <Typography align="center" variant="subtitle1">
+              Lihat Statistik
+            </Typography>
+          </Link>
+        </Typography>
+      </div>
+    </Container>
+  )
+
   return (
     <>
-      <CssBaseline />
-      <main className={classes.layout}>
-        <Paper className={classes.paper}>
-          <Typography component="h1" variant="h4" align="center">
-            Pilih Kandidat
-          </Typography>
-          <Stepper activeStep={activeStep} className={classes.stepper}>
-            {steps.map(label => (
-              <Step key={label}>
-                <StepLabel>{label}</StepLabel>
-              </Step>
-            ))}
-          </Stepper>
-          <>
-            {activeStep === steps.length ? (
+      {err_code ? (
+        errorPage()
+      ) : (
+        <>
+          <CssBaseline />
+          <main className={classes.layout}>
+            <Paper className={classes.paper}>
+              <Typography component="h1" variant="h4" align="center">
+                Pilih Kandidat
+              </Typography>
+              <Stepper activeStep={activeStep} className={classes.stepper}>
+                {steps.map(label => (
+                  <Step key={label}>
+                    <StepLabel>{label}</StepLabel>
+                  </Step>
+                ))}
+              </Stepper>
               <>
-                {/* Bagian Sukses */}
-                <Typography variant="h5" gutterBottom>
-                  Sukses. <br /> Terima kasih, {mhs.nama} telah menyalurkan
-                  suara Anda
-                </Typography>
-                <Link to="/publik">
-                  <Typography align="center" variant="subtitle1">
-                    Lihat Statistik
-                  </Typography>
-                </Link>
+                {activeStep === steps.length ? (
+                  <>
+                    {/* Bagian Sukses */}
+                    <Typography variant="h5" gutterBottom>
+                      Sukses. <br /> Terima kasih, {mhs.nama} telah menyalurkan
+                      suara Anda
+                    </Typography>
+                    <Link to="/publik">
+                      <Typography align="center" variant="subtitle1">
+                        Lihat Statistik
+                      </Typography>
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    {getStepContent(
+                      activeStep,
+                      listKandidat,
+                      pilihan,
+                      setPilihan
+                    )}
+                    <div className={classes.buttons}>
+                      {activeStep !== 0 && (
+                        <Button onClick={handleBack} className={classes.button}>
+                          Back
+                        </Button>
+                      )}
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleSubmit}
+                        // onClick={handleNext}
+                        disabled={!pilihan}
+                        className={classes.button}
+                      >
+                        {/* {activeStep === steps.length - 1 ? 'Selesai' : 'Lanjutkan'} */}
+                        Selesai
+                      </Button>
+                    </div>
+                  </>
+                )}
               </>
-            ) : (
-              <>
-                {getStepContent(activeStep, listKandidat, pilihan, setPilihan)}
-                <div className={classes.buttons}>
-                  {activeStep !== 0 && (
-                    <Button onClick={handleBack} className={classes.button}>
-                      Back
-                    </Button>
-                  )}
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleSubmit}
-                    // onClick={handleNext}
-                    disabled={!pilihan}
-                    className={classes.button}
-                  >
-                    {/* {activeStep === steps.length - 1 ? 'Selesai' : 'Lanjutkan'} */}
-                    Selesai
-                  </Button>
-                </div>
-              </>
-            )}
-          </>
-        </Paper>
-      </main>
+            </Paper>
+          </main>
+        </>
+      )}
     </>
   )
 }
@@ -165,6 +195,7 @@ const mapStateToprops = state => {
   return {
     mhs: state.public.mhs,
     vote: state.vote,
+    err_code: state.public.err_code,
   }
 }
 

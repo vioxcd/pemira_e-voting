@@ -10,8 +10,14 @@ import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container'
 import CameraAltIcon from '@material-ui/icons/CameraAlt'
+import Snackbar from '@material-ui/core/Snackbar'
+import MuiAlert from '@material-ui/lab/Alert'
 import Box from '@material-ui/core/Box'
 import { Link, Redirect } from 'react-router-dom'
+
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />
+}
 
 const useStyles = makeStyles(theme => ({
   input: {
@@ -29,7 +35,9 @@ function TatacaraPage(props) {
   const classes = useStyles()
   const { scanKTM } = props
 
+  const [errorUnidentified, setErrorUnidentified] = React.useState(false)
   const [redirect, setRedirect] = React.useState(false)
+
   const tatacara = [
     '1. Mahasiswa aktif UIN Syarif Hidayatullah Jakarta',
     '2. Memiliki Kartu Tanda Mahasiswa (KTM)',
@@ -37,7 +45,7 @@ function TatacaraPage(props) {
 
   const testVision = data => {
     const bearer =
-      'ya29.c.KmO5BygzKEj_2kIla11WYlDzUcgQVC1VK0Fk5xgHTi0rGy82VWnOlKpM1CjHNsdAqUNc1X8_v6Vykb1blpxmZESQNxEv3KAumyTY6eoDqhbzr52cqzkW3zTOSWjWcXnQQouWJPQ'
+      'ya29.c.KmO4B5nuvlvMJwo-1I-P3MCNgg7Y-jyQTZAJcNrraj8gUsuuAf426Um_2VFoR80kXvm47HYRfBuZFCSyxKjFw8dGNLmbZSLGQoGfLx7hdQyJzgXLRjBuqHeWLCAT9rfVP7vAKtA'
     const url = `https://vision.googleapis.com/v1p4beta1/images:annotate`
     const requestBody = {
       requests: [
@@ -80,7 +88,17 @@ function TatacaraPage(props) {
       })
       .catch(err => {
         console.log(err)
+        setErrorUnidentified(true)
       })
+  }
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return
+    }
+
+    // setErrorSudahMemilih(false)
+    setErrorUnidentified(false)
   }
 
   const encodeImageFileAsURL = e => {
@@ -92,12 +110,29 @@ function TatacaraPage(props) {
     reader.readAsDataURL(file)
   }
 
+  /*
+   * Error Handling
+   */
+  const errorUnidentifiedAlert = (
+    <Snackbar
+      open={errorUnidentified}
+      autoHideDuration={6000}
+      onClose={handleClose}
+    >
+      <Alert onClose={handleClose} color="error">
+        Pastikan langkah yang Anda lakukan benar.
+      </Alert>
+    </Snackbar>
+  )
+
   if (redirect) {
     return <Redirect to="/vote" />
   }
 
   return (
     <Container component="main" maxWidth="sm">
+      {errorUnidentifiedAlert}
+      {/* {errorSudahMemilihAlert} */}
       <CssBaseline />
       <div className={classes.paper}>
         <Typography component="h1" variant="h4" align="center">

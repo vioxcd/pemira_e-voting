@@ -9,13 +9,24 @@ export const scanKTM = nim => {
       })
       .then(response => {
         const data = response.data()
-        dispatch({
-          type: 'SCAN_KTM_SUCCESS',
-          data,
-          nim,
-        })
+
+        if (!data.memilih) {
+          console.log('Belum Memilih')
+          dispatch({
+            type: 'SCAN_KTM_SUCCESS',
+            data,
+            nim,
+          })
+        } else {
+          console.log('Sudah Memilih')
+          dispatch({
+            type: 'ERR_SUDAH_MEMILIH',
+            err_code: 'ERR_SUDAH_MEMILIH',
+          })
+        }
       })
       .catch(err => {
+        console.log(err)
         dispatch({
           type: 'SCAN_KTM_GAGAL',
           err,

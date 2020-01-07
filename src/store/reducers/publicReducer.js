@@ -1,5 +1,6 @@
 const initState = {
   mhs: '',
+  err_code: null,
 }
 
 const publicReducers = (state = initState, action) => {
@@ -12,6 +13,10 @@ const publicReducers = (state = initState, action) => {
     case 'SCAN_KTM_GAGAL':
       console.log('SCAN KTM GAGAL')
       console.log(action.err)
+      return state
+    case 'ERR_SUDAH_MEMILIH':
+      console.log('ERR_SUDAH_MEMILIH')
+      state.err_code = 'ERR_SUDAH_MEMILIH'
       return state
     default:
       return state
