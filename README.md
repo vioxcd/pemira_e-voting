@@ -12,7 +12,7 @@ Step to get it up and running
 
 ```json
 {
- "collection": [
+ "collection": {
   "admin": {
     "admin": {
       "username": "string",
@@ -39,7 +39,7 @@ Step to get it up and running
       "nama": "string"
     }
   },
-]
+ }
 }
 ```
 
