@@ -1,7 +1,5 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { compose } from 'redux'
-import { firestoreConnect } from 'react-redux-firebase'
 import { scanKTM } from '../../store/actions/publicActions'
 import Button from '@material-ui/core/Button'
 import IconButton from '@material-ui/core/IconButton'
@@ -13,7 +11,7 @@ import CameraAltIcon from '@material-ui/icons/CameraAlt'
 import Snackbar from '@material-ui/core/Snackbar'
 import MuiAlert from '@material-ui/lab/Alert'
 import Box from '@material-ui/core/Box'
-import { Link, Redirect } from 'react-router-dom'
+import { Redirect } from 'react-router-dom'
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />
@@ -44,8 +42,7 @@ function TatacaraPage(props) {
   ]
 
   const testVision = data => {
-    const bearer =
-      'ya29.c.KmO4B5nuvlvMJwo-1I-P3MCNgg7Y-jyQTZAJcNrraj8gUsuuAf426Um_2VFoR80kXvm47HYRfBuZFCSyxKjFw8dGNLmbZSLGQoGfLx7hdQyJzgXLRjBuqHeWLCAT9rfVP7vAKtA'
+    const bearer = 'YOUR VISION API KEY HERE'
     const url = `https://vision.googleapis.com/v1p4beta1/images:annotate`
     const requestBody = {
       requests: [
@@ -97,7 +94,6 @@ function TatacaraPage(props) {
       return
     }
 
-    // setErrorSudahMemilih(false)
     setErrorUnidentified(false)
   }
 
@@ -132,7 +128,6 @@ function TatacaraPage(props) {
   return (
     <Container component="main" maxWidth="sm">
       {errorUnidentifiedAlert}
-      {/* {errorSudahMemilihAlert} */}
       <CssBaseline />
       <div className={classes.paper}>
         <Typography component="h1" variant="h4" align="center">

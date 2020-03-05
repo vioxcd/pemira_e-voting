@@ -59,3 +59,23 @@ export const tambahKandidat = kandidat => {
       })
   }
 }
+
+export const deleteKandidat = kandidat_id => {
+  return (dispatch, getState, { getFirebase, getFirestore }) => {
+    // Make async calls to database
+    const firestore = getFirestore()
+    firestore
+      .delete({ collection: 'calon', doc: kandidat_id })
+      .then(() => {
+        dispatch({
+          type: 'SUCCESS_DELETE_KANDIDAT',
+        })
+      })
+      .catch(err => {
+        dispatch({
+          type: 'ERROR_DELETE_KANDIDAT',
+          err,
+        })
+      })
+  }
+}

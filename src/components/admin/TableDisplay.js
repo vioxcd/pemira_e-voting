@@ -11,7 +11,7 @@ import TableRow from '@material-ui/core/TableRow'
 import Link from '@material-ui/core/Link'
 
 const columns = [
-  { id: 'nomor_urut', label: 'No', minWidth: 50 },
+  { id: 'nomor_urut', label: 'No', minWidth: 30 },
   { id: 'calon_1_nama', label: 'Nama Calon 1', minWidth: 170 },
   {
     id: 'calon_1_nim',
@@ -31,7 +31,7 @@ const columns = [
   {
     id: 'foto_kampanye',
     label: 'Foto Kandidat',
-    minWidth: 170,
+    minWidth: 30,
     format: value => (
       <Link href={value} target="_blank" rel="noopener">
         Link
