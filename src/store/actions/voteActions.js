@@ -1,4 +1,3 @@
-// COBA POST UNIV
 export const submitVote = (pilihan, nim, vote) => {
   return (dispatch, getState, { getFirebase, getFirestore }) => {
     // Make async calls to database

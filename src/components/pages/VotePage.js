@@ -51,7 +51,7 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-const steps = ['Universitas' /* , 'Fakultas', 'Himpunan Jurusan' */]
+const steps = ['Universitas']
 
 function getStepContent(step, listKandidat, pilihan, setPilihan) {
   switch (step) {
@@ -63,10 +63,6 @@ function getStepContent(step, listKandidat, pilihan, setPilihan) {
           setPilihan={setPilihan}
         />
       )
-    // case 1:
-    //   return <ListKandidat />
-    // case 2:
-    //   return <ListKandidat />
     default:
       throw new Error('Unknown step')
   }
@@ -84,22 +80,12 @@ function VotePage(props) {
   const [activeStep, setActiveStep] = useState(0)
   const [pilihan, setPilihan] = useState('')
 
-  // const handleNext = () => {
-  //   setActiveStep(activeStep + 1)
-  // }
-
   const handleBack = () => {
     setActiveStep(activeStep - 1)
   }
 
   const handleSubmit = () => {
     setActiveStep(activeStep + 1)
-
-    // TODO: REMOVE
-    // const mhs = {
-    //   nim: '11160910000052',
-    // }
-
     submitVote(pilihan, mhs.nim, vote[pilihan] + 1)
   }
 

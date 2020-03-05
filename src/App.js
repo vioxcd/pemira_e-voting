@@ -6,7 +6,6 @@ import AdminLoginPage from './components/pages/AdminLoginPage'
 import ChartPage from './components/pages/ChartPage'
 import TatacaraPage from './components/pages/TatacaraPage'
 import VotePage from './components/pages/VotePage'
-import TestPage from './components/TestPage'
 
 function App() {
   return (
@@ -15,7 +14,6 @@ function App() {
         <Switch>
           <Route exact path="/" component={HomePage} />
           <Route path="/tatacara" component={TatacaraPage} />
-          <Route path="/test" component={TestPage} />
           <Route path="/login" component={AdminLoginPage} />
           <Route path="/admin" component={AdminPage} />
           <Route path="/publik" component={ChartPage} />

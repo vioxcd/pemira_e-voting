@@ -43,12 +43,9 @@ const store = createStore(
     reduxFirestore(firebase)
   )
 )
-// console.log(store.getState())
 
 const rrfConfig = {
   userProfile: 'users',
-  // useFirestoreForProfile: true // Firestore for Profile instead of Realtime DB
-  // enableClaims: true // Get custom claims along with the profile
 }
 
 const rrfProps = {
@@ -64,7 +61,6 @@ ReactDOM.render(
       <App />
     </ReactReduxFirebaseProvider>
   </Provider>,
-  // <Checkout />,
   document.getElementById('root')
 )
 
